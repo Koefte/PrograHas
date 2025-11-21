@@ -33,8 +33,8 @@ public class MinMaxTree {
     public MinMaxTree unfold(int depth){
         MinMaxTree ergebnis = new MinMaxTree(min,state);
         if(depth == 0) return ergebnis;
-        ergebnis = ergebnis.unfold()
-
+        ergebnis = ergebnis.unfold();
+        if(ergebnis.successors == null) return ergebnis;
 
         for(MinMaxTree succ : ergebnis.successors){
             succ.unfold(depth-1);
@@ -49,7 +49,7 @@ public class MinMaxTree {
             return state.evaluate();
         }
         if(min){
-            int min;
+            int min = Integer.MIN_VALUE;
             for(MinMaxTree succ : this.successors){
                 if(min > succ.score()) min = succ.score();
                 
@@ -57,7 +57,7 @@ public class MinMaxTree {
             return min;
         }
         else{
-            int max;
+            int max = Integer.MAX_VALUE;
             for(MinMaxTree succ: this.successors){
                 if(max < succ.score()) max = succ.score();
             }
@@ -65,7 +65,31 @@ public class MinMaxTree {
         }
     }
 
-    
+    public MinMaxTree makeMove(){
+        MinMaxTree ergebnis = null;
+        if(this.successors == null) throw new RuntimeException("No succesors on current tree");
+        if(min){
+            int min = Integer.MIN_VALUE;
+            for(MinMaxTree succ: this.successors){
+                if(min > succ.score()) {
+                    min = succ.score();
+                    ergebnis = succ;
+                }
+            }
+        }
+        else{
+            int max = Integer.MAX_VALUE;
+            for(MinMaxTree succ: this.successors){
+                if(max > succ.score()){
+                    max = succ.score();
+                    ergebnis = succ;
+                }
+            }
+        }
+        return ergebnis;
+    }
+
+
 
     public GameState getState(){
         return state;
