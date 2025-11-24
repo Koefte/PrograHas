@@ -14,7 +14,10 @@ public class Main {
         );
 
         state = state.unfold(9);
+
     }
+
+  
 
     private void makeAIMove(){
         if (!state.isMin())

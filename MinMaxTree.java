@@ -32,12 +32,12 @@ public class MinMaxTree {
 
     public MinMaxTree unfold(int depth){
         MinMaxTree ergebnis = new MinMaxTree(min,state);
-        if(depth == 0) return ergebnis;
+        if(depth == -1) return ergebnis;
         ergebnis = ergebnis.unfold();
         if(ergebnis.successors == null) return ergebnis;
 
-        for(MinMaxTree succ : ergebnis.successors){
-            succ.unfold(depth-1);
+        for(int i = 0;i<ergebnis.successors.length;i++){
+            ergebnis.successors[i] = ergebnis.successors[i].unfold(depth-1);
         }
         return ergebnis;
 
@@ -45,11 +45,11 @@ public class MinMaxTree {
     }
 
     public int score(){
-        if(successors == null){
+        if(successors == null || successors.length == 0){
             return state.evaluate();
         }
         if(min){
-            int min = Integer.MIN_VALUE;
+            int min = Integer.MAX_VALUE;
             for(MinMaxTree succ : this.successors){
                 if(min > succ.score()) min = succ.score();
                 
@@ -57,7 +57,7 @@ public class MinMaxTree {
             return min;
         }
         else{
-            int max = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
             for(MinMaxTree succ: this.successors){
                 if(max < succ.score()) max = succ.score();
             }
@@ -67,9 +67,9 @@ public class MinMaxTree {
 
     public MinMaxTree makeMove(){
         MinMaxTree ergebnis = null;
-        if(this.successors == null) throw new RuntimeException("No succesors on current tree");
+        if(this.successors == null || this.successors.length == 0) throw new RuntimeException("No succesors on current tree");
         if(min){
-            int min = Integer.MIN_VALUE;
+            int min = Integer.MAX_VALUE;
             for(MinMaxTree succ: this.successors){
                 if(min > succ.score()) {
                     min = succ.score();
@@ -78,12 +78,13 @@ public class MinMaxTree {
             }
         }
         else{
-            int max = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
             for(MinMaxTree succ: this.successors){
-                if(max > succ.score()){
+                if(max < succ.score()){
                     max = succ.score();
                     ergebnis = succ;
                 }
+                
             }
         }
         return ergebnis;
